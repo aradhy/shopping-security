@@ -24,7 +24,8 @@ if(( request.url.match('http://localhost:8080/signUp') || request.url.match('htt
       }),withCredentials: true
     });
   }
-  else{
+  else if(( request.url.match('http://localhost:8080/socialSignUp') || request.url.match('http://localhost:8080/socialSignIn')))
+  {
     request = request.clone({
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -33,12 +34,23 @@ if(( request.url.match('http://localhost:8080/signUp') || request.url.match('htt
       }),withCredentials: true,params: request.params.set('provider', localStorage.getItem("PROVIDER"))
     });
   }
+  else{
+   
+    request = request.clone({
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization':localStorage.getItem('JWT-TOKEN'),
+        'X-CSRF-TOKEN':localStorage.getItem('X-CSRF-TOKEN')
+        
+      }),withCredentials: true,params: request.params.set('provider', localStorage.getItem("PROVIDER"))
+    });
+
+
+
+  }
     console.log('Intercepted HTTP call', request);
 
-   // request.params.set('provider', localStorage.getItem("PROVIDER"))
-    alert(localStorage.getItem("PROVIDER"))
-    alert(request.params.get('provider'))
-  
+   
     // pass on the modified request object
     return next.handle(request);
 

@@ -7,6 +7,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider, LinkedInLoginProvider, AuthService, SocialLoginModule, LoginOpt  } from 'angularx-social-login';
 import { TokenInterceptor } from './token-interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UserComponent } from './user/user.component';
 
 const googleLoginOptions: LoginOpt = {
   scope: 'profile email'
@@ -32,12 +33,13 @@ export function provideConfig() {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
     SocialLoginModule,
-    HttpClientModule,FormsModule,ReactiveFormsModule
+    HttpClientModule,FormsModule,ReactiveFormsModule,AppRoutingModule
   ],
   providers: [{
       provide: AuthServiceConfig,

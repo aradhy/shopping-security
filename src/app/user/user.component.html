@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<div id="id01" class="modal">
+  
+   
+  
+   
+
+  <div *ngIf ="paramVal=='signUp' then signUp; else signIn" class="container">
+      
+  </div>
+  <ng-template #signUp>
+      <form class="modal-content" [formGroup]="signUpForm">
+          <div class="imgcontainer">
+              <span (click)="close()" class="close" title="Close Modal">&times;</span>
+            
+            </div>
+          <button id="signUp" type="button" (click)="changeForm('signUp')" class="signUp" >Sign Up</button>
+          <button id="signIn" type="button" (click)="changeForm('signIn')"  class="signIn">Sign In</button>
+         <br>
+          <label id="labelName" for="uname"><b>Your Name</b></label>
+          <input id='name' type="text" placeholder="Enter Your Name" formControlName="name" required>
+          <label for="mobile" id="labelMobile"><b>Mobile</b></label>
+          <input type="text" placeholder="Enter Mobile Number" formControlName="mobile" required>
+          <label for="email" id="labelEmail"><b>Email</b></label>
+          <input type="text" placeholder="Enter Email" formControlName="email" required>
+          <button id="formSignUp" type="submit" (click)="onSignUp(signForm)">Sign Up</button>
+          <div class="container" style="background-color:#f1f1f1">
+              <button type="button" (click)="close()" class="cancelbtn">Cancel</button>
+            
+            </div>
+        </form>
+
+        
+  </ng-template>
+  <ng-template #signIn>
+      <form class="modal-content" [formGroup]="signInForm">
+          <div class="imgcontainer">
+              <span (click)="close()" class="close" title="Close Modal">&times;</span>
+            </div>
+          <button id="signUp" type="button" (click)="changeForm('signUp')" class="signUp" >Sign Up</button>
+          <button id="signIn" type="button" (click)="changeForm('signIn')"  class="signIn">Sign In</button>
+         <br>
+          <label for="mobileOrEmail" id="labelMobileOrEmail"><b>Mobile or Email</b></label>
+             <input type="text" placeholder="Enter Mobile or Email" id="mobileOrEmail" formControlName="mobileOrEmail" required>
+             <label for="psw"><b>Password</b></label>
+             <input type="password" placeholder="Enter Password" name="password" required>
+           <button id="formSignIn" type="submit" (click)="onSignIn(signForm)">Sign In</button>
+           <div class="container" style="background-color:#f1f1f1">
+              <button type="button" (click)="close()" class="cancelbtn">Cancel</button>
+            </div>
+            </form>
+
+            
+    </ng-template>
+</div>
+</body>
+<router-outlet></router-outlet>
+</html>
+
