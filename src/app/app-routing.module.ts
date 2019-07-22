@@ -4,7 +4,7 @@ import { UserComponent } from './user/user.component';
 import { AppComponent } from './app.component';
 
 export const routes: Routes = [
-  { path: 'user/:id', component: UserComponent },
+  { path: 'user/:id', component: UserComponent }
 
   
 

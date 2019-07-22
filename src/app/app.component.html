@@ -1,4 +1,19 @@
-<a id="signUp" [routerLink]="['/user','signUp']" >Sign Up</a>
-<a id="signIn" [routerLink]="['/user','signIn']" >Sign In</a>
+<form class="example"  (ngSubmit)="searchProduct()" style="margin:auto;max-width:600px">
+        <input type="text" placeholder="Search.."  [formControl]="search"  [matAutocomplete]="auto"  autocomplete="off" size="50" ngModel>
+        <button type="submit" >Submit</button>
+      </form>
 
-<router-outlet></router-outlet>
+      
+      <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngIf="testFlag" ><mat-spinner diameter="20"></mat-spinner></mat-option>
+          <ng-container *ngIf="!testFlag">
+          <mat-option   *ngFor="let item of productList" >
+              <div *ngIf="productList!=null">
+                  <a href="javascript:void(0)">{{item.name}}-{{item.brand}}</a> 
+                  {{item.productAvailList[0].weight}}-{{item.productAvailList[0].weightUnit}}-{{item.productAvailList[0].price}}
+                </div>
+            </mat-option>
+          </ng-container>
+          </mat-autocomplete>
+  <br>
+         

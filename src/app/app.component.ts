@@ -1,18 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormControl,FormGroup,FormBuilder } from '@angular/forms';
+import { FormControl,FormGroup,FormBuilder, NgForm } from '@angular/forms';
 import { AuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider, LinkedInLoginProvider, AuthService, SocialLoginModule, LoginOpt  } from 'angularx-social-login';
 import { FacebookResponse } from './facebook-response';
 import { GoogleResponse } from './google-response';
 import { TokenResponse } from './token-response';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { of, Observable} from 'rxjs';
+import {map, startWith, debounceTime, catchError, switchMap, distinctUntilChanged, tap, finalize} from 'rxjs/operators';
+import { ProductService } from './product.service';
+import { Product } from './product';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewChecked {
+  ngAfterViewChecked(): void {
+    
+    if (this.check) { // check if it change, tell CD update view
+   //   this.isLoading = show;
+      this.cdRef.detectChanges();
+    }
+  }
+  testFlag:boolean=false;
   title = 'shopsecurity';
   httpClient:HttpClient;
   signUpForm:FormGroup;
@@ -23,20 +35,77 @@ export class AppComponent {
   mobileNumber:string="";
   password:string="";
   mobileOrEmail:string=""
+  customerName:string;
+flag=false;
+  search: FormControl;
+  filteredOptions: Observable<Product[]>;
+  searchFilter:string;
+ 
+  check:boolean=false;
+ 
+  productList: any[];
 
-
-
+  ngOnInit(): void {
    
- 
-  
-  ngOnInit() {
-  
-  
- 
+
+    this.signUpForm=this.formBuilder.group({
+      firstName: new FormControl(),
+      lastName:  new FormControl(),
+      email: new FormControl()
+    });
+
+      this.search = new FormControl();
+    
+      this.onchange();
   }
 
-  constructor(private http: HttpClient,private authService: AuthService,private formBuilder :FormBuilder,private router:Router) 
+  searchProduct()
   {
+  //alert(this.testFlag)
+ // this.testFlag=true
+    var productSearch=this.search.value;
+   // alert(this.testFlag)
+  }
+
+
+  callSearch(itemId,itemName)
+  {
+    if(itemId!=null && itemName!=null)
+    {
+    alert(itemId+" "+itemName+" is required")
+    }
+  }
+onchange()
+{
+
+   this.search.valueChanges.pipe(
+    distinctUntilChanged(),
+    debounceTime(1000),
+    switchMap(value =>value?this.productBasedSearch(value):of([]
+      ) 
+    
+    )
+    ).subscribe(productList => 
+      {
+      
+       this.productList = productList
+      this.testFlag = false
+      });
+   
+   
+
+}
+ 
+
+
+
+  constructor(private http: HttpClient,private authService: AuthService,private formBuilder :FormBuilder,private router:Router,private activatedRoute:ActivatedRoute,private productService: ProductService,private cdRef : ChangeDetectorRef) 
+  {
+    this.activatedRoute.params.subscribe(params => {
+      this.customerName = params.customerName; 
+    
+    });
+
     this.httpClient=http;
     this.signUpForm=formBuilder.group({
       name: new FormControl(),
@@ -90,8 +159,11 @@ export class AppComponent {
         if(tokenResponse.obj!=null  && tokenResponse.obj.csrfToken!=null )
         {
           if(tokenResponse.obj.userName!=null)
+          {
            alert("Welcome  "+tokenResponse.obj.userName)  
            localStorage.setItem("X-CSRF-TOKEN",tokenResponse.obj.csrfToken)
+          
+          }
         }
      //alert("Signed Up SuccessFully  via FaceBook by"+userData.email)
       
@@ -111,8 +183,11 @@ export class AppComponent {
         if(tokenResponse.obj!=null  && tokenResponse.obj.csrfToken!=null )
         {
              if(tokenResponse.obj.userName!=null)
+             {
              alert("Welcome  "+tokenResponse.obj.userName)
            localStorage.setItem("X-CSRF-TOKEN",tokenResponse.obj.csrfToken)
+           
+             }
         }
       //   alert("Signed Up SuccessFully via Google by "+userData.email)
           
@@ -231,6 +306,8 @@ export class AppComponent {
     localStorage.setItem("JWT-TOKEN",null)
     localStorage.setItem("X-CSRF-TOKEN",null)
     localStorage.setItem("PROVIDER",null)
+    localStorage.setItem("customerName",null)
+    this.customerName=null;
     alert("Logged Out Successfully")
   }
   
@@ -302,6 +379,30 @@ export class AppComponent {
 
   }
 
+  
+  productBasedSearch (name)
+  {  
+    
+    if(name.length>2)
+    {
+     
+      this.testFlag=true
+     var productObserv= this.productService.productBasedOnName(name)
+   
+     return productObserv;
+    }
+    else
+    {
+
+       return of([]);
+    }
+
+
+
+
+
+  
+  }
   
 
   

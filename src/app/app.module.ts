@@ -8,18 +8,28 @@ import { AuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider, LinkedIn
 import { TokenInterceptor } from './token-interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserComponent } from './user/user.component';
+import { MatInputModule, MatAutocompleteModule, MatFormFieldModule} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const googleLoginOptions: LoginOpt = {
-  scope: 'profile email'
+  scope: 'profile email',
+ 
+};
+
+const faceBookLoginOptions: LoginOpt = {
+  enable_profile_selector:true
+ 
 };
 let config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider("517977997834-kevh4fjm6um2roe04umom1h7mki74rtv.apps.googleusercontent.com")
+    provider: new GoogleLoginProvider("517977997834-kevh4fjm6um2roe04umom1h7mki74rtv.apps.googleusercontent.com",googleLoginOptions),
+   
   },
   {
     id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider("2190645354387980")
+    provider: new FacebookLoginProvider("2190645354387980",faceBookLoginOptions)
   }
 ]);
 
@@ -39,7 +49,12 @@ export function provideConfig() {
   imports: [
     BrowserModule,
     SocialLoginModule,
-    HttpClientModule,FormsModule,ReactiveFormsModule,AppRoutingModule
+    HttpClientModule,FormsModule,ReactiveFormsModule,AppRoutingModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule,FormsModule,MatProgressSpinnerModule
   ],
   providers: [{
       provide: AuthServiceConfig,
